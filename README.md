@@ -1,3 +1,2 @@
-# backend-trello-clone
-# **Для запуска использовать: **
+# Для запуска использовать:
 ## npm run start:dev  
