@@ -1,9 +1,10 @@
-import { Controller, Get, HttpStatus, Post, Body, Put, Param, Delete } from "@nestjs/common";
-import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { Controller, Get, HttpStatus, Post, Body, Put, Param, Delete, Query } from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CreateTaskDto } from "./dto/tasks.dto";
-import { TaskModel } from "./tasks.model";
+import { TaskModel } from "./models/tasks.model";
 import { TasksService } from "./tasks.service";
 
+@ApiTags("tasks")
 @Controller("tasks")
 export class TasksController {
     constructor(private readonly taskService: TasksService) {}
@@ -13,39 +14,39 @@ export class TasksController {
         status: HttpStatus.OK,
         type: TaskModel,
     })
-    @Post("create")
-    createTask(@Body() taskDto: CreateTaskDto) {
-        return this.taskService.createTask(taskDto);
+    @Post()
+    create(@Body() taskDto: CreateTaskDto) {
+        return this.taskService.create(taskDto);
     }
 
-    @ApiOperation({ summary: "Создание задния" })
+    @ApiOperation({ summary: "Получение всех заданий" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: TaskModel,
     })
     @Get()
-    getTasks() {
-        return this.taskService.getAllTasks();
+    findAll() {
+        return this.taskService.findAll();
     }
 
-    @ApiOperation({ summary: "Создание задания" })
+    @ApiOperation({ summary: "Получение адания" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: TaskModel,
     })
     @Get(":id")
-    getTask(@Param("id") id: string) {
-        return this.taskService.getTaskById(id);
+    findOne(@Param("id") id: string) {
+        return this.taskService.findOne(id);
     }
 
-    @ApiOperation({ summary: "Создание задания" })
+    @ApiOperation({ summary: "Обновление задания" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: TaskModel,
     })
     @Put()
-    updateTask() {
-        return this.taskService.updateTask();
+    update() {
+        return this.taskService.update();
     }
 
     @ApiOperation({ summary: "Удаление задания" })
@@ -53,8 +54,8 @@ export class TasksController {
         status: HttpStatus.OK,
         type: TaskModel,
     })
-    @Delete(":listId/:taskId")
-    deleteTask(@Param("taskId") taksId: string, @Param("listId") listId: string) {
-        return this.taskService.deleteTask(Number(taksId));
+    @Delete(":id")
+    delete(@Param("id") taskId: string, @Query("listId") listId: number) {
+        return this.taskService.delete(Number(taskId));
     }
 }

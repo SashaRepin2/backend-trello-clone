@@ -1,7 +1,16 @@
-import { BoardModel } from "@/boards/boards.model";
+import { BoardModel } from "@/boards/models/boards.model";
+import { TaskModel } from "@/tasks/models/tasks.model";
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Table, Model, BelongsTo, ForeignKey } from "sequelize-typescript";
-import { CreateListDto } from "./dto/lists.dto";
+import {
+    Column,
+    DataType,
+    Table,
+    Model,
+    BelongsTo,
+    ForeignKey,
+    HasMany,
+} from "sequelize-typescript";
+import { CreateListDto } from "../dto/lists.dto";
 
 @Table({ tableName: "lists" })
 export class ListModel extends Model<ListModel, CreateListDto> {
@@ -44,9 +53,13 @@ export class ListModel extends Model<ListModel, CreateListDto> {
     @ForeignKey(() => BoardModel)
     @Column({
         type: DataType.INTEGER,
+        allowNull: false,
     })
     boardId: number;
 
     @BelongsTo(() => BoardModel)
     board: BoardModel;
+
+    @HasMany(() => TaskModel)
+    tasks: TaskModel[];
 }

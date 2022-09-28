@@ -1,9 +1,11 @@
 import { Controller, Get, HttpStatus, Post, Body, Put, Param, Delete } from "@nestjs/common";
-import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CreateListDto } from "./dto/lists.dto";
-import { ListModel } from "./lists.model";
+import { ListModel } from "./models/lists.model";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ListsService } from "./lists.service";
 
+@ApiTags("lists")
 @Controller("lists")
 export class ListsController {
     constructor(private readonly ListsService: ListsService) {}
@@ -13,44 +15,39 @@ export class ListsController {
         status: HttpStatus.OK,
         type: ListModel,
     })
-    @ApiOperation({ summary: "Создание списка" })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: ListModel,
-    })
-    @Post("create")
+    @Post()
     createList(@Body() listDto: CreateListDto) {
-        return this.ListsService.createList(listDto);
+        return this.ListsService.create(listDto);
     }
 
-    @ApiOperation({ summary: "Создание списка" })
+    @ApiOperation({ summary: "Получение всех списков" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: ListModel,
     })
     @Get()
-    getLists() {
-        return this.ListsService.getAllLists();
+    findAll() {
+        return this.ListsService.findAll();
     }
 
-    @ApiOperation({ summary: "Создание списка" })
+    @ApiOperation({ summary: "Получение списка" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: ListModel,
     })
     @Get(":id")
-    getList(@Param("id") id: string) {
-        return this.ListsService.getListById(id);
+    findOne(@Param("id") id: string) {
+        return this.ListsService.findOne(Number(id));
     }
 
-    @ApiOperation({ summary: "Создание списка" })
+    @ApiOperation({ summary: "Обновление списка" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: ListModel,
     })
-    @Put()
-    updateList(@Param("id") id: string) {
-        return this.ListsService.getListById(id);
+    @Put(":id")
+    update(@Param("id") listId: string) {
+        return this.ListsService.update(Number(listId));
     }
 
     @ApiOperation({ summary: "Удаление списка" })
@@ -58,8 +55,8 @@ export class ListsController {
         status: HttpStatus.OK,
         type: ListModel,
     })
-    @Delete(":boardId/:listId")
-    deleteList(@Param("listId") listId: string, @Param("boardId") boardId: string) {
-        return this.ListsService.getListById(listId);
+    @Delete(":id")
+    delete(@Param("id") listId: string) {
+        return this.ListsService.delete(Number(listId));
     }
 }

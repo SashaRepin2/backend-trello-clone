@@ -1,6 +1,8 @@
+import { TaskModel } from "@/tasks/models/tasks.model";
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Table, Model } from "sequelize-typescript";
-import { CreateLabelDto } from "./dto/labels.dto";
+import { Column, DataType, Table, Model, BelongsToMany } from "sequelize-typescript";
+import { CreateLabelDto } from "../dto/create-label.dto";
+import { LabelsTasksModel } from "./labels-tasks.model";
 
 @Table({ tableName: "labels" })
 export class LabelModel extends Model<LabelModel, CreateLabelDto> {
@@ -35,4 +37,7 @@ export class LabelModel extends Model<LabelModel, CreateLabelDto> {
         allowNull: false,
     })
     hexColor: string;
+
+    @BelongsToMany(() => TaskModel, () => LabelsTasksModel)
+    tasks: TaskModel[];
 }

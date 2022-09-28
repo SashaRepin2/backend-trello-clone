@@ -1,23 +1,23 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateTaskDto } from "./dto/tasks.dto";
-import { TaskModel } from "./tasks.model";
+import { TaskModel } from "./models/tasks.model";
 
 @Injectable()
 export class TasksService {
     constructor(@InjectModel(TaskModel) private tasksRepository: typeof TaskModel) {}
 
-    async createTask(taskDto: CreateTaskDto) {
+    async create(taskDto: CreateTaskDto) {
         const task = this.tasksRepository.create(taskDto);
 
         return task;
     }
 
-    async getAllTasks() {
+    async findAll() {
         return await this.tasksRepository.findAll();
     }
 
-    async getTaskById(id: string) {
+    async findOne(id: string) {
         const board = await this.tasksRepository.findByPk(Number(id));
 
         if (!board) {
@@ -27,13 +27,13 @@ export class TasksService {
         return board;
     }
 
-    async updateTask() {
+    async update() {
         const board = await this.tasksRepository.create();
 
         return board;
     }
 
-    async deleteTask(taskId: number) {
+    async delete(taskId: number) {
         const task = await this.tasksRepository.findByPk(taskId);
 
         if (!task) {

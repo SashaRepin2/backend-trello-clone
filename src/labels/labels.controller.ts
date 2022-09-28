@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Body, Param, HttpStatus, Delete, Put } from "@nestjs/common";
-import { LabelsService } from "./labels.service";
-import { CreateLabelDto } from "./dto/labels.dto";
-import { ApiOperation, ApiResponse } from "@nestjs/swagger";
-import { LabelModel } from "./labels.model";
 
+import { CreateLabelDto } from "./dto/create-label.dto";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { LabelModel } from "./models/labels.model";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { LabelsService } from "./labels.service";
+
+@ApiTags("labels")
 @Controller("labels")
 export class LabelsController {
     constructor(private readonly LabelsService: LabelsService) {}
@@ -14,8 +18,8 @@ export class LabelsController {
         type: LabelModel,
     })
     @Post()
-    createLabel(@Body() labelDto: CreateLabelDto) {
-        return this.LabelsService.createLabel(labelDto);
+    create(@Body() labelDto: CreateLabelDto) {
+        return this.LabelsService.create(labelDto);
     }
 
     @ApiOperation({ summary: "Получение меток" })
@@ -24,8 +28,8 @@ export class LabelsController {
         type: [LabelModel],
     })
     @Get()
-    getLabels() {
-        return this.LabelsService.getAllLabels();
+    findAll() {
+        return this.LabelsService.findAll();
     }
 
     @ApiOperation({ summary: "Получение метки" })
@@ -34,18 +38,18 @@ export class LabelsController {
         type: LabelModel,
     })
     @Get(":id")
-    getLabel(@Param("id") id: string) {
-        return this.LabelsService.getLabelById(Number(id));
+    findOne(@Param("id") id: string) {
+        return this.LabelsService.findOne(Number(id));
     }
 
-    @ApiOperation({ summary: "Обновить метки" })
+    @ApiOperation({ summary: "Обновить метку" })
     @ApiResponse({
         status: HttpStatus.OK,
         type: LabelModel,
     })
     @Put(":id")
-    updateLabel(@Param("id") id: string) {
-        return this.LabelsService.getLabelById(Number(id));
+    update(@Param("id") id: string, @Body() labelDto: CreateLabelDto) {
+        return this.LabelsService.update(Number(id), labelDto);
     }
 
     @ApiOperation({ summary: "Удаление метки" })
@@ -54,7 +58,7 @@ export class LabelsController {
         type: LabelModel,
     })
     @Delete(":id")
-    deleteLabel(@Param("id") id: string) {
-        return this.LabelsService.getLabelById(Number(id));
+    delete(@Param("id") id: string) {
+        return this.LabelsService.delete(Number(id));
     }
 }

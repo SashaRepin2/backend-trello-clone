@@ -1,7 +1,7 @@
-import { ListModel } from "@/lists/lists.model";
+import { ListModel } from "@/lists/models/lists.model";
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, Table, Model, HasMany } from "sequelize-typescript";
-import { CreateBoardDto } from "./dto/boards.dto";
+import { CreateBoardDto } from "../dto/create-board.dto";
 
 @Table({ tableName: "boards" })
 export class BoardModel extends Model<BoardModel, CreateBoardDto> {

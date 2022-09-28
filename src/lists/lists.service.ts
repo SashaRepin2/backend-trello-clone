@@ -1,29 +1,51 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateListDto } from "./dto/lists.dto";
-import { ListModel } from "./lists.model";
+import { ListModel } from "./models/lists.model";
 
 @Injectable()
 export class ListsService {
     constructor(@InjectModel(ListModel) private listsRepository: typeof ListModel) {}
 
-    async getAllLists() {
+    async findAll() {
         return await this.listsRepository.findAll();
     }
 
-    async getListById(id: string) {
-        const board = await this.listsRepository.findByPk(Number(id));
+    async findOne(listId: number) {
+        const list = await this.listsRepository.findByPk(listId);
 
-        if (!board) {
-            throw new HttpException("Доска не найдена", HttpStatus.BAD_REQUEST);
+        if (!list) {
+            throw new HttpException("Список не найден", HttpStatus.BAD_REQUEST);
         }
 
-        return board;
+        return list;
     }
 
-    async createList(listDto: CreateListDto) {
-        const board = await this.listsRepository.create(listDto);
+    async create(listDto: CreateListDto) {
+        const list = await this.listsRepository.create(listDto);
 
-        return board;
+        return list;
+    }
+
+    async delete(listId: number) {
+        const list = await this.listsRepository.findByPk(listId);
+
+        if (!list) {
+            throw new HttpException("Список не найден", HttpStatus.BAD_REQUEST);
+        }
+
+        this.listsRepository.destroy({
+            where: {
+                id: list.id,
+            },
+        });
+    }
+
+    async update(listId) {
+        const list = await this.listsRepository.findByPk(listId);
+
+        if (!list) {
+            throw new HttpException("Список не найден", HttpStatus.BAD_REQUEST);
+        }
     }
 }
